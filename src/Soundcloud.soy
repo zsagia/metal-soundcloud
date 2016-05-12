@@ -1,0 +1,13 @@
+{namespace Soundcloud}
+
+/**
+ * This renders the main element.
+ * @param? elementClasses
+ */
+{template .render}
+	<div class="soundcloud container-fluid {$elementClasses ?: ''}">
+		<div class="search-bar">
+			<input type="text" id="searchId" class="form-control" placeholder="Search for music here..." />
+		</div>
+	</div>
+{/template}
