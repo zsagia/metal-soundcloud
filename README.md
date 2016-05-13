@@ -19,4 +19,8 @@ can find it [here](https://nodejs.org).
   npm run build
   ```
 
-4. Open the demo at demos/index.html on your browser.
+4. Start the app
+
+  ```
+  npm start
+  ```
