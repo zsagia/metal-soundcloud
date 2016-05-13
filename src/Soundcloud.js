@@ -11,30 +11,96 @@ import SoundcloudPlayer from './components/SoundcloudPlayer';
 import Autocomplete from 'metal-autocomplete';
 import List from 'metal-list';
 
+// Third party imports
+var SC = require('soundcloud');
+var Axios = require('axios');
+
 class Soundcloud extends Component {
-	constructor(config) {
-		super(config);
+	attached() {
+		SC.initialize({
+			client_id: '6323ee40d2426a7f286e21ce25e59342'
+		});
+
+		this.searchInput = document.querySelector('#searchId');
 
 		this.autocomplete = new metal.Autocomplete({
-			elementClasses: 'autocomplete-topbar',
-			inputElement: document.querySelector('#searchId'),
-			data: function(query) {
-				return ['Alabama', 'Alaska'].filter(function(item) {
-					return query && item.toLowerCase().indexOf(query.toLowerCase()) === 0;
-				});
-			}
+			inputElement: this.searchInput
 		});
-
-		this.list = new List({
-			element: '#list2',
-			itemsHtml: '<a href="#" class="list-group-item">Item1</a><a href="#" class="list-group-item">Item2</a>'
-		});
-
-		this.player = new SoundcloudPlayer();
 	}
+
+	onSubmitEventHandler(event) {
+		event.preventDefault();
+
+		let app = this;
+
+		Axios.get(`https://api.soundcloud.com/tracks?client_id=6323ee40d2426a7f286e21ce25e59342&q=` + this.searchInput.value)
+      .then(function (response) {
+        // Update track state
+        app.setTracks_(response.data);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+	}
+
+	inputChangeEventHandler(event) {
+		let app = this;
+
+		Axios.get(`https://api.soundcloud.com/tracks?client_id=6323ee40d2426a7f286e21ce25e59342&q=` + event.target.value)
+			.then(function (response) {
+				// Update track state
+				let autocompleteTracks = [];
+
+				for(let i = 0; i < response.data.length; i++) {
+					autocompleteTracks.push(response.data[i].title);
+				}
+
+				app.autocomplete.data = autocompleteTracks;
+			})
+			.catch(function (err) {
+				console.log(err);
+			});
+	}
+
+	getTracks_() {
+		return this.tracks;
+	}
+
+	selectTrackEventHandler(track) {
+		console.log(track);
+	}
+
+	setTracks_(values) {
+		let tracks = [];
+
+		if (values !== undefined) {
+			for(let i = 0; i < values.length; i++) {
+				tracks.push(values[i]);
+
+				if (i < 1) console.log(values[i]);
+			}
+		}
+
+		this.tracks = tracks;
+	}
+
+
 }
 Soy.register(Soundcloud, templates);
 
-Soundcloud.STATE = {}
+Soundcloud.STATE = {
+	autocomplete: null,
+	track: {stream_url: '', title: '', artwork_url: ''},
+	tracks: {
+		value: []
+	},
+	playStatus: 'STOPPED',
+	elapsed: '00:00',
+	total: '00:00',
+	position: 0,
+	playFromPosition: 0,
+	autoCompleteValue: [],
+	searchInput: null
+}
 
 export default Soundcloud;

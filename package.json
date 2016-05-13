@@ -28,11 +28,13 @@
 		"metal"
 	],
 	"dependencies": {
+		"axios": "",
 		"bootstrap": "^3.3.6",
 		"metal": "metal/metal.js#master",
 		"metal-component": "^1.0.0-rc.11",
 		"metal-soy": "^1.0.0-rc.11",
-		"metal-autocomplete": ""
+		"metal-autocomplete": "",
+		"soundcloud": ""
 	},
 	"devDependencies": {
 		"babel-cli": "^6.4.5",

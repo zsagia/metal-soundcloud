@@ -41,18 +41,64 @@ var iattr = IncrementalDom.attr;
  */
 function $render(opt_data, opt_ignored, opt_ijData) {
   var $$temp;
-  opt_data = opt_data || {};
   ie_open('div', null, null,
       'class', 'soundcloud container-fluid ' + (($$temp = opt_data.elementClasses) == null ? '' : $$temp));
     ie_open('div', null, null,
         'class', 'search-bar');
-      ie_open('input', null, null,
-          'type', 'text',
-          'id', 'searchId',
-          'class', 'form-control',
-          'placeholder', 'Search for music here...');
-      ie_close('input');
+      ie_open('form', null, null,
+          'data-onsubmit', 'onSubmitEventHandler');
+        ie_open('input', null, null,
+            'data-onkeyup', 'inputChangeEventHandler',
+            'type', 'text',
+            'id', 'searchId',
+            'class', 'form-control',
+            'placeholder', 'Search for music here...');
+        ie_close('input');
+      ie_close('form');
     ie_close('div');
+    var trackList25 = opt_data.tracks;
+    var trackListLen25 = trackList25.length;
+    for (var trackIndex25 = 0; trackIndex25 < trackListLen25; trackIndex25++) {
+      var trackData25 = trackList25[trackIndex25];
+      ie_open('div', null, null,
+          'class', 'card-horizontal',
+          'data-onclick', 'selectTrackEventHandler');
+        ie_open('div', null, null,
+            'class', 'card-row');
+          ie_open('div', null, null,
+              'class', 'card-col-1');
+            if (trackData25.artwork_url != null) {
+              ie_open('img', null, null,
+                  'alt', 'thumbnail',
+                  'class', 'img-responsive',
+                  'src', trackData25.artwork_url);
+              ie_close('img');
+            } else if (trackData25.user.avatar_url != null) {
+              ie_open('img', null, null,
+                  'alt', 'thumbnail',
+                  'class', 'img-responsive',
+                  'src', trackData25.user.avatar_url);
+              ie_close('img');
+            } else {
+              ie_open('img', null, null,
+                  'alt', 'thumbnail',
+                  'class', 'img-responsive',
+                  'src', trackData25.waveform_url);
+              ie_close('img');
+            }
+          ie_close('div');
+          ie_open('div', null, null,
+              'class', 'card-col-7 card-col-gutters');
+            ie_open('h4');
+              itext((goog.asserts.assert((trackData25.user.username) != null), trackData25.user.username));
+            ie_close('h4');
+            ie_open('p');
+              itext((goog.asserts.assert((trackData25.title) != null), trackData25.title));
+            ie_close('p');
+          ie_close('div');
+        ie_close('div');
+      ie_close('div');
+    }
   ie_close('div');
 }
 exports.render = $render;
@@ -60,8 +106,8 @@ if (goog.DEBUG) {
   $render.soyTemplateName = 'Soundcloud.render';
 }
 
-exports.render.params = ["elementClasses"];
-exports.render.types = {"elementClasses":"any"};
+exports.render.params = ["elementClasses","tracks"];
+exports.render.types = {"elementClasses":"any","tracks":"any"};
 templates = exports;
 return exports;
 

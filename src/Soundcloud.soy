@@ -3,11 +3,38 @@
 /**
  * This renders the main element.
  * @param? elementClasses
+ * @param tracks
  */
 {template .render}
 	<div class="soundcloud container-fluid {$elementClasses ?: ''}">
 		<div class="search-bar">
-			<input type="text" id="searchId" class="form-control" placeholder="Search for music here..." />
+			<form data-onsubmit="onSubmitEventHandler">
+				<input data-onkeyup="inputChangeEventHandler" type="text" id="searchId" class="form-control" placeholder="Search for music here..." />
+			</form>
 		</div>
+
+		{foreach $track in $tracks}
+			<div class="card-horizontal" data-onclick="selectTrackEventHandler">
+				<div class="card-row">
+						<div class="card-col-1">
+								{if $track.artwork_url != null}
+									<img alt="thumbnail" class="img-responsive" src="{$track.artwork_url}">
+								{elseif $track.user.avatar_url != null}
+									<img alt="thumbnail" class="img-responsive" src="{$track.user.avatar_url}">
+								{else}
+									<img alt="thumbnail" class="img-responsive" src="{$track.waveform_url}">
+								{/if}
+
+						</div>
+
+						<div class="card-col-7 card-col-gutters">
+								<h4>{$track.user.username}</h4>
+								<p>{$track.title}</p>
+						</div>
+				</div>
+			</div>
+		{/foreach}
+
+		//{call SoundcloudPlayer.render}{/call}
 	</div>
 {/template}
